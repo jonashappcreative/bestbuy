@@ -23,6 +23,10 @@ class Store:
     def order(self, shopping_list):
 
         price = float()
+
+        #unpacks the list of tuples from shopping_list
         for product, quantity in shopping_list:
+            product.buy(quantity)
             price += product.price * quantity
+
         return price
