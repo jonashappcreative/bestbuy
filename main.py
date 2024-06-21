@@ -31,7 +31,7 @@ def start(best_buy):
                 print(f"The store currently has {best_buy.get_total_quantity()} items in stock")
             elif user_choice == 3:
                 make_order(best_buy)
-            elif user_choice == 4:
+            elif user_choice >= 4:
                 is_running = False
                 print("Exiting...")
 
