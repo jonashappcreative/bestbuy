@@ -4,16 +4,19 @@ class Product:
 
         if not name:
             print("Name can't be empty")
+            raise ValueError("Name can't be empty")
         if not price or price < 0:
             print("Price needs to be specified and must not be negative")
+            raise ValueError("Price needs to be specified and must not be negative")
         if not quantity or quantity < 1:
             print("Quantity must be minimum one")
+            raise ValueError("Quantity must be minimum one")
+
 
         self.name = name
         self.price = price
         self.quantity = quantity
         self.active = True
-
 
     def get_quantity(self):
         return float(self.quantity)

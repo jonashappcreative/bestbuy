@@ -59,8 +59,8 @@ def generate_shopping_list(best_buy):
             quantity = input("What amount do you want? ")
             print("Product added to list!")
             print("")
-            tuple = product_choice, quantity
-            list_of_tuples.append(tuple)
+            tuple_choice = product_choice, quantity
+            list_of_tuples.append(tuple_choice)
 
     return list_of_tuples
 
@@ -81,7 +81,6 @@ def make_order(best_buy):
         # Append the corresponding product and quantity to the shopping list
         shopping_list.append((active_products[index], quantity))
 
-
     price_of_order = best_buy.order(shopping_list)
     print("\n******** Order Made ********")
     print(f"Your total order costs {price_of_order} EUR")
@@ -97,22 +96,6 @@ def main():
 
     best_buy = Store(product_list)
     start(best_buy)
-
-    #Second commit Debugging and Testing Area
-    """store = Store(product_list)
-
-    # Name differently than the imported products class!
-    active_products = store.get_all_products()
-
-    # Here we print the amount of items in the store
-    print(f"The store currently has {store.get_total_quantity()} items in stock")
-
-    # Here we are referencing the list of products by using their (index[x], quantity)
-    price_of_order = store.order([(active_products[0], 1), (active_products[1], 2)])
-    print(f"Your total order costs {price_of_order} EUR")
-
-    print(f"The store now has {store.get_total_quantity()} items in stock")
-    """
 
 
 if __name__ == "__main__":

@@ -1,5 +1,3 @@
-from products import Product
-
 class Store:
 
     def __init__(self, product_list):
@@ -24,7 +22,7 @@ class Store:
 
         price = float()
 
-        #unpacks the list of tuples from shopping_list
+        # unpacks the list of tuples from shopping_list
         for product, quantity in shopping_list:
             product.buy(quantity)
             price += product.price * quantity
