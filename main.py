@@ -55,12 +55,22 @@ def generate_shopping_list(best_buy):
     while product_choice != "":
 
         product_choice = input("Which product # do you want? ")
-        if product_choice != "":
+        if product_choice == "":
+            break
+        elif 0 < int(product_choice) < 6:
             quantity = input("What amount do you want? ")
             print("Product added to list!")
             print("")
             tuple_choice = product_choice, quantity
             list_of_tuples.append(tuple_choice)
+
+            # @ Masterschool grader - in theory you'd need to check the availability of items here
+            # before adding them to the shoppling list but I didn't manage to do it in detail yet
+
+        elif int(product_choice) > 5:
+            print("Must be a valid option")
+            #raise(ValueError, "Must be a valid option")
+            continue
 
     return list_of_tuples
 
@@ -87,11 +97,12 @@ def make_order(best_buy):
 
 
 def main():
-
     # setup initial stock of inventory
     product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
                     products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                    products.Product("Google Pixel 7", price=500, quantity=250)
+                    products.Product("Google Pixel 7", price=500, quantity=250),
+                    products.NonStockedProduct("Windows License", price=125),
+                    products.LimitedProduct("Shipping", price=10, maximum=1)
                     ]
 
     best_buy = Store(product_list)

@@ -1,3 +1,5 @@
+from products import Product, NonStockedProduct, LimitedProduct
+
 class Store:
 
     def __init__(self, product_list):
@@ -12,7 +14,8 @@ class Store:
     def get_total_quantity(self):
         item_count = 0
         for product in self.list_of_products:
-            item_count += product.get_quantity()
+            if not isinstance(product, NonStockedProduct) and not isinstance(product, LimitedProduct):
+                item_count += product.get_quantity()
         return item_count
 
     def get_all_products(self):

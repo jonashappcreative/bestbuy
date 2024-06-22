@@ -12,7 +12,6 @@ class Product:
             print("Quantity must be minimum one")
             raise ValueError("Quantity must be minimum one")
 
-
         self.name = name
         self.price = price
         self.quantity = quantity
@@ -51,3 +50,40 @@ class Product:
         else:
             self.set_quantity(available_quantity - buy_quantity)
             return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
+
+
+# Here we declare that the NonStockedProduct class inherits from the Product class
+class NonStockedProduct(Product):
+    def __init__(self, name, price):
+        super().__init__(name, price, quantity=1) #quantity is a dummy
+        self.quantity = "unlimited"
+
+    def show(self):
+        return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
+
+    def buy(self, buy_quantity):
+        if buy_quantity <= 0:
+            raise ValueError("Purchase quantity must be at least one")
+        return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
+
+
+# Here we declare that the LimitedProduct class inherits from the Product class
+class LimitedProduct(Product):
+    def __init__(self, name, price, maximum):
+        super().__init__(name, price, maximum) #quantity is a dummy
+        self.maximum = maximum
+        self.quantity = f"{self.maximum} per order"
+
+    def show(self):
+        return f"{self.name}, Price: {self.price}, Quantity: Maximum of {self.maximum} per order"
+
+    def buy(self, buy_quantity):
+
+        if buy_quantity <= 0:
+            print("Purchase quantity must be one, cancelled this request")
+        elif buy_quantity == 1:
+            return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
+        elif buy_quantity > 1:
+            raise ValueError("Only one per order possible, added one instead.")
+            return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
+
