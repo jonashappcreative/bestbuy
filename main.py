@@ -1,5 +1,6 @@
 import products
 from store import Store
+import promotions
 
 
 def start(best_buy):
@@ -40,16 +41,14 @@ def print_product_list(best_buy):
     print("------")
     product_list = best_buy.get_all_products()
     for index, product in enumerate(product_list, start=1):
-        print(f"{index}. {product.name}, Price {product.price} EUR, Quantity: {product.quantity}")
+        print(f"{index}. {product.show()}")
     print("------\n")
 
 
 def generate_shopping_list(best_buy):
 
     print_product_list(best_buy)
-
     list_of_tuples = []
-
     product_choice = "LOOP_STARTER"
 
     while product_choice != "":
@@ -65,11 +64,10 @@ def generate_shopping_list(best_buy):
             list_of_tuples.append(tuple_choice)
 
             # @ Masterschool grader - in theory you'd need to check the availability of items here
-            # before adding them to the shoppling list but I didn't manage to do it in detail yet
+            # before adding them to the shopping list, but I didn't manage to do it in detail yet
 
-        elif int(product_choice) > 5:
+        else:
             print("Must be a valid option")
-            #raise(ValueError, "Must be a valid option")
             continue
 
     return list_of_tuples
@@ -85,7 +83,7 @@ def make_order(best_buy):
     for item in list_of_tuple:
 
         # Convert index and quantity from string to int and adjust index
-        index = int(item[0]) - 1  # Subtract 1 for 0-based indexing
+        index = int(item[0]) - 1  # Adjust for 0-based indexing
         quantity = int(item[1])
 
         # Append the corresponding product and quantity to the shopping list
@@ -104,6 +102,16 @@ def main():
                     products.NonStockedProduct("Windows License", price=125),
                     products.LimitedProduct("Shipping", price=10, maximum=1)
                     ]
+
+    # Create promotion catalog
+    second_half_price = promotions.SecondHalfPrice("Second Half price!")
+    third_one_free = promotions.ThirdOneFree("Third One Free!")
+    thirty_percent = promotions.PercentDiscount("30% off!", percent=30)
+
+    # Add promotions to products
+    product_list[0].set_promotion(second_half_price)
+    product_list[1].set_promotion(third_one_free)
+    product_list[3].set_promotion(thirty_percent)
 
     best_buy = Store(product_list)
     start(best_buy)

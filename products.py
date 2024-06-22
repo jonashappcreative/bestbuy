@@ -1,6 +1,8 @@
+
+
 class Product:
 
-    def __init__(self, name, price, quantity):
+    def __init__(self, name, price, quantity, promotion=None):
 
         if not name:
             print("Name can't be empty")
@@ -16,6 +18,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = promotion
 
     def get_quantity(self):
         return float(self.quantity)
@@ -25,6 +28,12 @@ class Product:
 
         if self.quantity <= 0:
             self.active = False
+
+    def get_promotion(self):
+        return self.promotion
+
+    def set_promotion(self, promotion):
+        self.promotion = promotion
 
     def activate(self):
         self.active = True
@@ -36,43 +45,63 @@ class Product:
         return self.active
 
     def show(self):
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        if self.promotion is None:
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+        else:
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Promotion: {self.promotion}"
 
     def buy(self, buy_quantity):
 
         available_quantity = self.get_quantity()
 
         if available_quantity <= 0:
-            raise ValueError("Purchase quantity must be positive")
+            print("Purchase quantity must be positive")
+            return
+            # raise ValueError("Purchase quantity must be positive")
         elif buy_quantity > available_quantity:
-            raise ValueError(f"No soo many products available."
+            print(f"No soo many products available."
                   f"Currently we have {self.quantity} of {self.name} in stock.")
+            return
+            # raise ValueError(f"No soo many products available."
+            #       f"Currently we have {self.quantity} of {self.name} in stock.")
         else:
             self.set_quantity(available_quantity - buy_quantity)
-            return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
+
+            if self.promotion:
+                total_price = self.promotion.apply_promotion(self, buy_quantity)
+            else:
+                total_price = self.price * buy_quantity
+
+            return f"You bought {buy_quantity}x {self.name} for {total_price} EUR"
 
 
 # Here we declare that the NonStockedProduct class inherits from the Product class
 class NonStockedProduct(Product):
     def __init__(self, name, price):
-        super().__init__(name, price, quantity=1) #quantity is a dummy
+        super().__init__(name, price, quantity=1)  # quantity is a dummy
         self.quantity = "unlimited"
 
     def show(self):
         return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
 
     def buy(self, buy_quantity):
+        total_price = 0
         if buy_quantity <= 0:
-            raise ValueError("Purchase quantity must be at least one")
-        return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
+            print("Purchase quantity must be at least one")
+            # raise ValueError("Purchase quantity must be at least one")
+
+        elif self.promotion:
+            total_price = self.promotion.apply_promotion(self, buy_quantity)
+        else:
+            total_price = self.price * buy_quantity
+        return f"You bought {buy_quantity}x {self.name} for {total_price} EUR"
 
 
 # Here we declare that the LimitedProduct class inherits from the Product class
 class LimitedProduct(Product):
     def __init__(self, name, price, maximum):
-        super().__init__(name, price, maximum) #quantity is a dummy
+        super().__init__(name, price, maximum)
         self.maximum = maximum
-        self.quantity = f"{self.maximum} per order"
 
     def show(self):
         return f"{self.name}, Price: {self.price}, Quantity: Maximum of {self.maximum} per order"
@@ -80,10 +109,11 @@ class LimitedProduct(Product):
     def buy(self, buy_quantity):
 
         if buy_quantity <= 0:
-            print("Purchase quantity must be one, cancelled this request")
-        elif buy_quantity == 1:
-            return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
-        elif buy_quantity > 1:
-            raise ValueError("Only one per order possible, added one instead.")
-            return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"
-
+            return f"Purchase quantity must be one, cancelled this request"
+        if buy_quantity > self.maximum:
+            return f"Cannot buy more than {self.maximum} per order"
+        elif self.promotion:
+            total_price = self.promotion.apply_promotion(self, buy_quantity)
+        else:
+            total_price = self.price * buy_quantity
+        return f"You bought {buy_quantity}x {self.name} for {total_price} EUR"

@@ -64,6 +64,7 @@ def test_buy_modifies_quantity():
     product.buy(5)
     assert product.quantity == 5
 
+
 def test_buy_too_much():
     """
     Test that buying a larger
