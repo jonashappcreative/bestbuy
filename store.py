@@ -28,7 +28,13 @@ class Store:
 
         # unpacks the list of tuples from shopping_list
         for product, quantity in shopping_list:
-            product.buy(quantity)
-            price += product.price * quantity
+
+            if product.get_promotion():
+                #  print(product.promotion) DEBUG
+                product.buy(quantity)
+                price = product.promotion.apply_promotion(product, quantity)
+            else:
+                product.buy(quantity)
+                price += product.price * quantity
 
         return price

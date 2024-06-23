@@ -18,7 +18,8 @@ class SecondHalfPrice(Promotion):
         else:
             half_price_items = quantity // 2
             full_price_items = quantity - half_price_items
-            return (full_price_items * product.price) + (half_price_items * product.price * 0.5)
+            price_after_promotion = (full_price_items * product.price) + (half_price_items * product.price * 0.5)
+            return price_after_promotion
 
     def show(self):
         return f"{self.name}"
@@ -31,8 +32,7 @@ class ThirdOneFree(Promotion):
         return f"{self.name}"
 
     def apply_promotion(self, product, quantity):
-        free_third_items = quantity - (quantity // 3)
-        full_price_items = quantity - free_third_items
+        full_price_items = quantity - (quantity // 3)
         return full_price_items * product.price
 
 

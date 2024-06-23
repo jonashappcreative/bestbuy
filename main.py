@@ -41,6 +41,7 @@ def print_product_list(best_buy):
     print("------")
     product_list = best_buy.get_all_products()
     for index, product in enumerate(product_list, start=1):
+        #  print(type(product.show())) DEBUG
         print(f"{index}. {product.show()}")
     print("------\n")
 

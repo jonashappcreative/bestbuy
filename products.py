@@ -48,7 +48,7 @@ class Product:
         if self.promotion is None:
             return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
         else:
-            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Promotion: {self.promotion}"
+            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Promotion: {self.promotion.show()}"
 
     def buy(self, buy_quantity):
 
@@ -59,11 +59,8 @@ class Product:
             return
             # raise ValueError("Purchase quantity must be positive")
         elif buy_quantity > available_quantity:
-            print(f"No soo many products available."
-                  f"Currently we have {self.quantity} of {self.name} in stock.")
-            return
-            # raise ValueError(f"No soo many products available."
-            #       f"Currently we have {self.quantity} of {self.name} in stock.")
+            raise ValueError(f"No soo many products available."
+                   f"Currently we have {self.quantity} of {self.name} in stock.")
         else:
             self.set_quantity(available_quantity - buy_quantity)
 
@@ -81,8 +78,9 @@ class NonStockedProduct(Product):
         super().__init__(name, price, quantity=1)  # quantity is a dummy
         self.quantity = "unlimited"
 
-    def show(self):
-        return f"{self.name}, Price: {self.price}, Quantity: Unlimited"
+    # def show(self):
+        #  Somehow get the Show text from the Main and add the Quantity: Unlimited as a string appendix
+    #     return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Promotion: {self.promotion.show()}"
 
     def buy(self, buy_quantity):
         total_price = 0
