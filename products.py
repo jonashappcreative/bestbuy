@@ -1,5 +1,3 @@
-
-
 class Product:
 
     def __init__(self, name, price, quantity, promotion=None):
@@ -60,7 +58,7 @@ class Product:
             # raise ValueError("Purchase quantity must be positive")
         elif buy_quantity > available_quantity:
             raise ValueError(f"No soo many products available."
-                   f"Currently we have {self.quantity} of {self.name} in stock.")
+                             f"Currently we have {self.quantity} of {self.name} in stock.")
         else:
             self.set_quantity(available_quantity - buy_quantity)
 
@@ -75,11 +73,11 @@ class Product:
 # Here we declare that the NonStockedProduct class inherits from the Product class
 class NonStockedProduct(Product):
     def __init__(self, name, price):
-        super().__init__(name, price, quantity=1)  # quantity is a dummy
+        super().__init__(name, price, quantity=2)  # quantity is a dummy
         self.quantity = "unlimited"
 
     # def show(self):
-        #  Somehow get the Show text from the Main and add the Quantity: Unlimited as a string appendix
+    #  Somehow get the Show text from the Main and add the Quantity: Unlimited as a string appendix
     #     return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Promotion: {self.promotion.show()}"
 
     def buy(self, buy_quantity):
@@ -100,12 +98,15 @@ class LimitedProduct(Product):
     def __init__(self, name, price, maximum):
         super().__init__(name, price, maximum)
         self.maximum = maximum
+        self.quantity = 0
 
     def show(self):
         return f"{self.name}, Price: {self.price}, Quantity: Maximum of {self.maximum} per order"
 
     def buy(self, buy_quantity):
 
+        """
+        OLD CODE
         if buy_quantity <= 0:
             return f"Purchase quantity must be one, cancelled this request"
         if buy_quantity > self.maximum:
@@ -115,3 +116,11 @@ class LimitedProduct(Product):
         else:
             total_price = self.price * buy_quantity
         return f"You bought {buy_quantity}x {self.name} for {total_price} EUR"
+        """
+
+        #  New Code:
+        if buy_quantity <= 0:
+            raise ValueError("Purchase quantity must be at least one")
+        elif buy_quantity > self.maximum:
+            raise ValueError(f"Purchase quantity must not exceed the maximum limit of {self.maximum}")
+        return f"You bought {buy_quantity}x {self.name} for {self.price * buy_quantity} EUR"

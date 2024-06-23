@@ -24,6 +24,7 @@ class SecondHalfPrice(Promotion):
     def show(self):
         return f"{self.name}"
 
+
 class ThirdOneFree(Promotion):
     def __init__(self, name):
         self.name = name

@@ -1,6 +1,7 @@
 import products
-from store import Store
 import promotions
+from products import LimitedProduct, NonStockedProduct
+from store import Store
 
 
 def start(best_buy):
@@ -41,51 +42,66 @@ def print_product_list(best_buy):
     print("------")
     product_list = best_buy.get_all_products()
     for index, product in enumerate(product_list, start=1):
-        #  print(type(product.show())) DEBUG
         print(f"{index}. {product.show()}")
     print("------\n")
 
 
 def generate_shopping_list(best_buy):
-
     print_product_list(best_buy)
     list_of_tuples = []
     product_choice = "LOOP_STARTER"
+    active_products = best_buy.get_all_products()
 
     while product_choice != "":
-
         product_choice = input("Which product # do you want? ")
         if product_choice == "":
             break
-        elif 0 < int(product_choice) < 6:
-            quantity = input("What amount do you want? ")
-            print("Product added to list!")
-            print("")
-            tuple_choice = product_choice, quantity
-            list_of_tuples.append(tuple_choice)
 
-            # @ Masterschool grader - in theory you'd need to check the availability of items here
-            # before adding them to the shopping list, but I didn't manage to do it in detail yet
+        try:
+            product_index = int(product_choice) - 1  # Adjust for 0-based indexing
+            if 0 <= product_index < len(active_products):
+                product = active_products[product_index]
 
-        else:
-            print("Must be a valid option")
-            continue
+                quantity = 0
+                while quantity <= 0:
+                    try:
+                        quantity = int(input("What amount do you want? "))
+                        if quantity <= 0:
+                            print("Amount can't be zero or negative!")
+                    except ValueError:
+                        print("Please enter a valid number.")
+
+                if isinstance(product, NonStockedProduct):
+                    list_of_tuples.append((product_index, quantity))
+                    print("Product added to list!")
+                elif isinstance(product, LimitedProduct):
+                    if quantity > product.maximum:
+                        print(f"Sorry, the maximum quantity for {product.name} is {product.maximum}.")
+                    else:
+                        list_of_tuples.append((product_index, quantity))
+                        print("Product added to list!")
+                else:
+                    if quantity > product.get_quantity():
+                        print(f"Sorry, only {product.get_quantity()} of {product.name} is available.")
+                    else:
+                        list_of_tuples.append((product_index, quantity))
+                        print("Product added to list!")
+            else:
+                print("Invalid product number.")
+        except ValueError:
+            print("Please enter a valid number.")
 
     return list_of_tuples
 
 
 def make_order(best_buy):
-
-    list_of_tuple = generate_shopping_list(best_buy)
+    shopping_list_tuples = generate_shopping_list(best_buy)
     active_products = best_buy.get_all_products()
-
     shopping_list = []
 
-    for item in list_of_tuple:
-
-        # Convert index and quantity from string to int and adjust index
-        index = int(item[0]) - 1  # Adjust for 0-based indexing
-        quantity = int(item[1])
+    for item in shopping_list_tuples:
+        index = item[0]
+        quantity = item[1]
 
         # Append the corresponding product and quantity to the shopping list
         shopping_list.append((active_products[index], quantity))
